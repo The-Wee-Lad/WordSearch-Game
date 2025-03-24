@@ -10,7 +10,7 @@ function App() {
 let letters = [];
 for(let i = 0; i < 15*15; i++)
     letters.push("A");
-let content = {theme : "random", letters,solution :  new Set(["AAAA","AAA","AAAAA"]),size : 14}
+let content = {theme : "random", letters,solution :  new Set(["AAAA","AAA","AAAAA","AAAAAA","AAAAAAAAA","AAAAAAAA","AAAAAAAAAA","AAAAAAAAAAAAAA"]),size : 14}
 
 let [solution,setSolution] = useState(new Set([...content.solution]));
 let [solvedStrings,setSolvedStrings] = useState(new Set());
