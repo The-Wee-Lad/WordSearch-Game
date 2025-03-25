@@ -1,5 +1,5 @@
 import { Grid } from './Grid.jsx'
-import { Solutions } from './solutions.jsx';
+import { Solutions } from './Solutions.jsx';
 import { Info } from './Info.jsx';
 import { useState } from 'react';
 
