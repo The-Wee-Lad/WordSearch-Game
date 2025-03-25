@@ -1,23 +1,20 @@
 import { useRef, useState } from 'react';
 import 'tailwindcss';
 
-function check(array, indexArray, solution, solvedStrings, setSolvedStrings){
+function check(array, indexArray, solution, setSolvedStrings){
     let string="";
     console.log(indexArray.length, typeof indexArray);
-    for(let i = 0; i < indexArray.length; i++){
+    for(let i = 0; i < indexArray.length; i++)
         string+= array[indexArray[i]];
-    }
     if(solution.has(string) || solution.has(string.split('').reverse().join(''))){
         solution.delete(string);
-        console.log(solution,solvedStrings);
         setSolvedStrings(prev=>new Set([...prev,string]));
-        console.log(string);
         return true;
     }
     return false;
 }
 
-function Grid({content, solution, setSolution, solvedStrings, setSolvedStrings}){
+function Grid({content, solution, setSolution, setSolvedStrings}){
     
     let [isClick,setIsClick] = useState(false);
     let startX = useRef(null);
@@ -32,16 +29,14 @@ function Grid({content, solution, setSolution, solvedStrings, setSolvedStrings})
     let grid = [];
     for(let i = 0; i < content.size; i++){
         for(let j = 0; j < content.size; j++){
-            let a =parseInt(100/content.size);
             let index = i*content.size+j;
             grid.push(
-                <div className={` border-solid border-1  flex justify-center items-center
+                <div className={` border-solid border-1 rounded-[0.2rem]  flex justify-center items-center
                     ${selectedCell.has(index)?"bg-amber-300":solvedCell.has(index)?"bg-green-500":hoveredCell==index?"bg-amber-100":"bg-cyan-100"}
                     `}  
                     data-x={j}
                     data-y={i} 
                     key={i*content.size+j}
-                    style={{width:`${a}%`}}
                     onMouseOver={(event)=>{
                             if(isClick == false){
                                 setHoveredCell(index);
@@ -82,7 +77,7 @@ function Grid({content, solution, setSolution, solvedStrings, setSolvedStrings})
                         setIsClick(false);
                         setHoveredCell(index);
                         let tempArray = [...selectedCell]
-                        if(check(content.letters, tempArray, solution, solvedStrings, setSolvedStrings)){
+                        if(check(content.letters, tempArray, solution, setSolvedStrings)){
                             setSolvedCell(prev => new Set([...prev,...selectedCell]));
                             setSolution(new Set([...solution]));
                         }
@@ -94,19 +89,22 @@ function Grid({content, solution, setSolution, solvedStrings, setSolvedStrings})
             );
         }
     }
+    
     let section = 
-    <section className='gridContainer p-2 bg-cyan-100 flex justify-center flex-wrap min-w-screen gap-0 select-none '
-            onMouseOver={(event)=>{
-                if(!event.target.dataset.x){
-                    setIsClick(false);
-                    setHoveredCell(null);
-                    setSelectedCell(new Set());
+    <section className={`gridContainer grid grid-cols-14 grid-rows-14 w-screen h-screen p-4 gap-1 rounded-2xl bg-cyan-100 select-none`}
+            onMouseUp={()=>{
+                setIsClick(false);
+                // setHoveredCell(index);
+                let tempArray = [...selectedCell]
+                if(check(content.letters, tempArray, solution, setSolvedStrings)){
+                    setSolvedCell(prev => new Set([...prev,...selectedCell]));
+                    setSolution(new Set([...solution]));
                 }
+                setSelectedCell(new Set());
             }}
     >
         {grid}
     </section>
-
 
     return (
         <>
