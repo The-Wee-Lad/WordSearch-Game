@@ -30,7 +30,7 @@ let content = {info : {theme:"Surname", author:"Aditya Narayan", createdAt:"test
       <Header/>
 
       <Wordsearch content = {content}/>
-      
+      <a href="https://github.com/The-Wee-Lad"><div className='m-2 bg-black text-white border-2 rounded-xl w-fit p-2'>Made by Aditya Narayan</div></a>
     </>
   )
 }
