@@ -1,6 +1,7 @@
 import './App.css';
 import './components/Grid.jsx'
 import { Grid } from './components/Grid.jsx';
+import {Header} from './components/Header.jsx'
 import { Solutions } from './components/solutions.jsx';
 import { useState } from 'react';
 
@@ -17,9 +18,7 @@ let [solvedStrings,setSolvedStrings] = useState(new Set());
 
   return (
     <>
-      <h1 className="text-4xl text-[#71797E] font-bold p-8">
-        Wordsearch
-      </h1>
+      <Header/>
       <Solutions solvedStrings={solvedStrings} solutions={solution}/>
       <div className="flex justify-center ">
         <Grid content={content}

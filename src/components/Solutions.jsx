@@ -23,7 +23,7 @@ function Solutions({solvedStrings = new Set(),solutions=new Set(["No Solutions P
     console.log(solvedArray);
     
     return (
-        <div className="flex flex-row justify-start items-center bg-amber-200 rounded-xl p-2 m-2">
+        <div className="flex flex-row justify-start items-center flex-wrap gap-y-1 bg-amber-200 rounded-xl p-2 m-2">
             {solutionArray}
             {solvedArray}
         </div>

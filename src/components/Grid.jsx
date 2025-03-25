@@ -95,7 +95,15 @@ function Grid({content, solution, setSolution, solvedStrings, setSolvedStrings})
         }
     }
     let section = 
-    <section className='gridContainer p-2 bg-cyan-100 flex justify-center flex-wrap min-w-screen gap-0 select-none'>
+    <section className='gridContainer p-2 bg-cyan-100 flex justify-center flex-wrap min-w-screen gap-0 select-none '
+            onMouseOver={(event)=>{
+                if(!event.target.dataset.x){
+                    setIsClick(false);
+                    setHoveredCell(null);
+                    setSelectedCell(new Set());
+                }
+            }}
+    >
         {grid}
     </section>
 
