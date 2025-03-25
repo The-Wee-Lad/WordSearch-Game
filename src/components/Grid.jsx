@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import 'tailwindcss';
 
+
 function check(array, indexArray, solution, setSolvedStrings){
     let string="";
     for(let i = 0; i < indexArray.length; i++)
@@ -25,6 +26,46 @@ function Grid({content, solution, setSolution, setSolvedStrings}){
     let [solvedCell,setSolvedCell] = useState(new Set());
     let [hoveredCell,setHoveredCell] = useState(null);
 
+    const endDrag = ()=>{
+        setIsClick(false);
+        // setHoveredCell(index);
+        let tempArray = [...selectedCell]
+        if(check(content.letters, tempArray, solution, setSolvedStrings)){
+            setSolvedCell(prev => new Set([...prev,...selectedCell]));
+            setSolution(new Set([...solution]));
+        }
+        setSelectedCell(new Set());
+    };
+    const startDrag = (event,index)=>{
+        setIsClick(true);
+        setHoveredCell(null);
+        setSelectedCell(new Set([index]));
+        startX.current = event.target.dataset.x;
+        startY.current = event.target.dataset.y;
+        lastX.current = null;
+        lastY.current = null;
+    }
+    const dragging = (event,index)=>{
+        if(isClick == false){
+            setHoveredCell(index);
+        }else{
+            if (lastX.current == null && lastY.current == null){
+                lastX.current = event.target.dataset.x;
+                lastY.current = event.target.dataset.y;
+                setSelectedCell(prev => new Set([...prev,index]));
+            }else{
+                if((startX.current - lastX.current == lastX.current - event.target.dataset.x) 
+                && (startY.current - lastY.current == lastY.current - event.target.dataset.y)){
+                    startX.current = lastX.current;
+                    startY.current = lastY.current;
+                    lastX.current = event.target.dataset.x;
+                    lastY.current = event.target.dataset.y;
+                    setSelectedCell(prev => new Set([...prev,index]));
+                }   
+            }
+        }
+    }
+
     let grid = [];
     for(let i = 0; i < content.size; i++){
         for(let j = 0; j < content.size; j++){
@@ -36,42 +77,16 @@ function Grid({content, solution, setSolution, setSolvedStrings}){
                     data-x={j}
                     data-y={i} 
                     key={i*content.size+j}
-                    onMouseOver={(event)=>{
-                            if(isClick == false){
-                                setHoveredCell(index);
-                            }else{
-                                if (lastX.current == null && lastY.current == null){
-                                    lastX.current = event.target.dataset.x;
-                                    lastY.current = event.target.dataset.y;
-                                    setSelectedCell(prev => new Set([...prev,index]));
-                                }else{
-                                    if((startX.current - lastX.current == lastX.current - event.target.dataset.x) 
-                                    && (startY.current - lastY.current == lastY.current - event.target.dataset.y)){
-                                        startX.current = lastX.current;
-                                        startY.current = lastY.current;
-                                        lastX.current = event.target.dataset.x;
-                                        lastY.current = event.target.dataset.y;
-                                        setSelectedCell(prev => new Set([...prev,index]));
-                                    }   
-                                }
-                            }
-                        }
-                    }
+                    onMouseOver={(event) => {dragging(event,index)}}
                     onMouseOut={()=>{
                             if(isClick == false){
                                 setHoveredCell(null);
                             }
                         }
                     }
-                    onMouseDown={(event)=>{
-                        setIsClick(true);
-                        setHoveredCell(null);
-                        setSelectedCell(new Set([index]));
-                        startX.current = event.target.dataset.x;
-                        startY.current = event.target.dataset.y;
-                        lastX.current = null;
-                        lastY.current = null;
-                    }}
+                    onMouseDown={(event)=>{startDrag(event,index)}}
+                    onTouchStart={(event)=>{startDrag(event,index)}}
+                    onTouchMove={(event) => {dragging(event,index)}}
                     
                 >
                 {content.letters[index]}
@@ -86,26 +101,9 @@ function Grid({content, solution, setSolution, setSolvedStrings}){
         gridTemplateColumns: `repeat(${content.size}, 1fr)`,
         gridTemplateRows: `repeat(${content.size}, 1fr)`,
     }}        
-    onMouseUp={()=>{
-                setIsClick(false);
-                // setHoveredCell(index);
-                let tempArray = [...selectedCell]
-                if(check(content.letters, tempArray, solution, setSolvedStrings)){
-                    setSolvedCell(prev => new Set([...prev,...selectedCell]));
-                    setSolution(new Set([...solution]));
-                }
-                setSelectedCell(new Set());
-            }}
-    onMouseLeave={()=>{
-        setIsClick(false);
-        // setHoveredCell(index);
-        let tempArray = [...selectedCell]
-        if(check(content.letters, tempArray, solution, setSolvedStrings)){
-            setSolvedCell(prev => new Set([...prev,...selectedCell]));
-            setSolution(new Set([...solution]));
-        }
-        setSelectedCell(new Set());
-    }}
+    onMouseUp={endDrag}
+    onMouseLeave={endDrag}
+    onTouchEnd={endDrag}
     >
         {grid}
     </section>
