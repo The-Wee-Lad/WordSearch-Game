@@ -2,7 +2,7 @@
 function Header(){
     return (
         <div className="flex items-center p-3">
-            <img src="./src/assets/wordsearch.png" alt="Logo" className="h-20 w-20  flex justify-center items-center"/>
+            <img src="/wordsearch.png" alt="Logo" className="h-20 w-20  flex justify-center items-center"/>
             <h1 className="text-4xl text-[#71797E] font-bold ml-1">
                 Wordsearch
             </h1>
