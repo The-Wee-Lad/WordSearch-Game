@@ -3,7 +3,6 @@ import 'tailwindcss';
 
 function check(array, indexArray, solution, setSolvedStrings){
     let string="";
-    console.log(indexArray.length, typeof indexArray);
     for(let i = 0; i < indexArray.length; i++)
         string+= array[indexArray[i]];
     if(solution.has(string) || solution.has(string.split('').reverse().join(''))){
@@ -32,7 +31,7 @@ function Grid({content, solution, setSolution, setSolvedStrings}){
             let index = i*content.size+j;
             grid.push(
                 <div className={` border-solid border-1 rounded-[0.2rem]  flex justify-center items-center
-                    ${selectedCell.has(index)?"bg-amber-300":solvedCell.has(index)?"bg-green-500":hoveredCell==index?"bg-amber-100":"bg-cyan-100"}
+                    ${hoveredCell==index?"bg-amber-100":selectedCell.has(index)?"bg-amber-300":solvedCell.has(index)?"bg-green-500":"bg-cyan-100"}
                     `}  
                     data-x={j}
                     data-y={i} 
@@ -73,16 +72,7 @@ function Grid({content, solution, setSolution, setSolvedStrings}){
                         lastX.current = null;
                         lastY.current = null;
                     }}
-                    onMouseUp={()=>{
-                        setIsClick(false);
-                        setHoveredCell(index);
-                        let tempArray = [...selectedCell]
-                        if(check(content.letters, tempArray, solution, setSolvedStrings)){
-                            setSolvedCell(prev => new Set([...prev,...selectedCell]));
-                            setSolution(new Set([...solution]));
-                        }
-                        setSelectedCell(new Set());
-                    }}
+                    
                 >
                 {content.letters[index]}
                 </div>
@@ -91,8 +81,12 @@ function Grid({content, solution, setSolution, setSolvedStrings}){
     }
     
     let section = 
-    <section className={`gridContainer grid grid-cols-14 grid-rows-14 w-screen h-screen p-4 gap-1 rounded-2xl bg-cyan-100 select-none`}
-            onMouseUp={()=>{
+    <section className={`gridContainer grid w-full h-100 p-4 gap-1 rounded-2xl bg-cyan-100 select-none`}
+    style={{
+        gridTemplateColumns: `repeat(${content.size}, 1fr)`,
+        gridTemplateRows: `repeat(${content.size}, 1fr)`,
+    }}        
+    onMouseUp={()=>{
                 setIsClick(false);
                 // setHoveredCell(index);
                 let tempArray = [...selectedCell]
@@ -102,6 +96,16 @@ function Grid({content, solution, setSolution, setSolvedStrings}){
                 }
                 setSelectedCell(new Set());
             }}
+    onMouseLeave={()=>{
+        setIsClick(false);
+        // setHoveredCell(index);
+        let tempArray = [...selectedCell]
+        if(check(content.letters, tempArray, solution, setSolvedStrings)){
+            setSolvedCell(prev => new Set([...prev,...selectedCell]));
+            setSolution(new Set([...solution]));
+        }
+        setSelectedCell(new Set());
+    }}
     >
         {grid}
     </section>

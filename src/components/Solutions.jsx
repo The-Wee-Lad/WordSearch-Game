@@ -21,7 +21,6 @@ function Solutions({solvedStrings = new Set(),solutions=new Set(["No Solutions P
             </div>
         )
     }
-    console.log(solvedArray);
     
     return (
         <div className="flex flex-row justify-start items-center flex-wrap gap-0.5 bg-amber-200 rounded-xl p-2">
