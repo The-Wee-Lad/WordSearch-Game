@@ -85,9 +85,6 @@ function Grid({content, solution, setSolution, setSolvedStrings}){
                         }
                     }
                     onMouseDown={(event)=>{startDrag(event,index)}}
-                    // onTouchStart={(event)=>{startDrag(event,index)}}
-                    // onTouchMove={(event) => {event.preventDefault();;dragging(event,index)}}
-                    
                 >
                 {content.letters[index]}
                 </div>
@@ -103,7 +100,6 @@ function Grid({content, solution, setSolution, setSolvedStrings}){
     }}        
     onMouseUp={endDrag}
     onMouseLeave={endDrag}
-    // onTouchEnd={endDrag}
     >
         {grid}
     </section>
