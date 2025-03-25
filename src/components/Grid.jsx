@@ -85,8 +85,8 @@ function Grid({content, solution, setSolution, setSolvedStrings}){
                         }
                     }
                     onMouseDown={(event)=>{startDrag(event,index)}}
-                    onTouchStart={(event)=>{event.preventDefault();startDrag(event,index)}}
-                    onTouchMove={(event) => {event.preventDefault();;dragging(event,index)}}
+                    // onTouchStart={(event)=>{startDrag(event,index)}}
+                    // onTouchMove={(event) => {event.preventDefault();;dragging(event,index)}}
                     
                 >
                 {content.letters[index]}
@@ -103,7 +103,7 @@ function Grid({content, solution, setSolution, setSolvedStrings}){
     }}        
     onMouseUp={endDrag}
     onMouseLeave={endDrag}
-    onTouchEnd={endDrag}
+    // onTouchEnd={endDrag}
     >
         {grid}
     </section>
