@@ -1,136 +1,119 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import 'tailwindcss';
 
-function check(array, indexArray, solution, setSolvedStrings) {
-    let string = "";
-    for (let i = 0; i < indexArray.length; i++) string += array[indexArray[i]];
-    
-    if (solution.has(string) || solution.has(string.split('').reverse().join(''))) {
+
+function check(array, indexArray, solution, setSolvedStrings){
+    let string="";
+    for(let i = 0; i < indexArray.length; i++)
+        string+= array[indexArray[i]];
+    if(solution.has(string) || solution.has(string.split('').reverse().join(''))){
         solution.delete(string);
-        setSolvedStrings(prev => new Set([...prev, string]));
+        setSolvedStrings(prev=>new Set([...prev,string]));
         return true;
     }
     return false;
 }
 
-function Grid({ content, solution, setSolution, setSolvedStrings }) {
-    let [isClick, setIsClick] = useState(false);
+function Grid({content, solution, setSolution, setSolvedStrings}){
+    
+    let [isClick,setIsClick] = useState(false);
     let startX = useRef(null);
     let startY = useRef(null);
     let lastX = useRef(null);
     let lastY = useRef(null);
 
-    let [selectedCell, setSelectedCell] = useState(new Set());
-    let [solvedCell, setSolvedCell] = useState(new Set());
-    let [hoveredCell, setHoveredCell] = useState(null);
+    let [selectedCell,setSelectedCell] = useState(new Set());
+    let [solvedCell,setSolvedCell] = useState(new Set());
+    let [hoveredCell,setHoveredCell] = useState(null);
 
-    // Prevent touch events from triggering scrolling
-    useEffect(() => {
-        const preventTouchScroll = (event) => event.preventDefault();
-        
-        document.addEventListener("touchmove", preventTouchScroll, { passive: false });
-
-        return () => {
-            document.removeEventListener("touchmove", preventTouchScroll);
-        };
-    }, []);
-
-    const endDrag = () => {
+    const endDrag = ()=>{
         setIsClick(false);
-        let tempArray = [...selectedCell];
-        if (check(content.letters, tempArray, solution, setSolvedStrings)) {
-            setSolvedCell(prev => new Set([...prev, ...selectedCell]));
+        // setHoveredCell(index);
+        let tempArray = [...selectedCell]
+        if(check(content.letters, tempArray, solution, setSolvedStrings)){
+            setSolvedCell(prev => new Set([...prev,...selectedCell]));
             setSolution(new Set([...solution]));
         }
         setSelectedCell(new Set());
     };
-
-    const startDrag = (event, index) => {
-        event.preventDefault(); // Prevent accidental scrolling
+    const startDrag = (event,index)=>{
         setIsClick(true);
         setHoveredCell(null);
         setSelectedCell(new Set([index]));
-
-        // Get touch position correctly
-        const element = event.target;
-        if (!element.dataset.x || !element.dataset.y) return;
-
-        startX.current = parseInt(element.dataset.x, 10);
-        startY.current = parseInt(element.dataset.y, 10);
+        startX.current = event.target.dataset.x;
+        startY.current = event.target.dataset.y;
         lastX.current = null;
         lastY.current = null;
-    };
-
-    const dragging = (event) => {
-        if (!isClick) return;
-
-        event.preventDefault();
-
-        // Get the touch position dynamically
-        const touch = event.touches[0];
-        const element = document.elementFromPoint(touch.clientX, touch.clientY);
-
-        if (!element || !element.dataset.x || !element.dataset.y) return;
-
-        const x = parseInt(element.dataset.x, 10);
-        const y = parseInt(element.dataset.y, 10);
-        const index = y * content.size + x;
-
-        if (lastX.current === null && lastY.current === null) {
-            lastX.current = x;
-            lastY.current = y;
-            setSelectedCell(prev => new Set([...prev, index]));
-        } else {
-            if ((startX.current - lastX.current === lastX.current - x) &&
-                (startY.current - lastY.current === lastY.current - y)) {
-                startX.current = lastX.current;
-                startY.current = lastY.current;
-                lastX.current = x;
-                lastY.current = y;
-                setSelectedCell(prev => new Set([...prev, index]));
+    }
+    const dragging = (event,index)=>{
+        if(isClick == false){
+            setHoveredCell(index);
+        }else{
+            if (lastX.current == null && lastY.current == null){
+                lastX.current = event.target.dataset.x;
+                lastY.current = event.target.dataset.y;
+                setSelectedCell(prev => new Set([...prev,index]));
+            }else{
+                if((startX.current - lastX.current == lastX.current - event.target.dataset.x) 
+                && (startY.current - lastY.current == lastY.current - event.target.dataset.y)){
+                    startX.current = lastX.current;
+                    startY.current = lastY.current;
+                    lastX.current = event.target.dataset.x;
+                    lastY.current = event.target.dataset.y;
+                    setSelectedCell(prev => new Set([...prev,index]));
+                }   
             }
         }
-    };
+    }
 
     let grid = [];
-    for (let i = 0; i < content.size; i++) {
-        for (let j = 0; j < content.size; j++) {
-            let index = i * content.size + j;
+    for(let i = 0; i < content.size; i++){
+        for(let j = 0; j < content.size; j++){
+            let index = i*content.size+j;
             grid.push(
-                <div
-                    className={`border-solid border-1 rounded-[0.2rem] flex justify-center items-center
-                    ${hoveredCell == index ? "bg-amber-100" :
-                        selectedCell.has(index) ? "bg-amber-300" :
-                            solvedCell.has(index) ? "bg-green-500" : "bg-cyan-100"}`}
+                <div className={` border-solid border-1 rounded-[0.2rem]  flex justify-center items-center
+                    ${hoveredCell==index?"bg-amber-100":selectedCell.has(index)?"bg-amber-300":solvedCell.has(index)?"bg-green-500":"bg-cyan-100"}
+                    `}  
                     data-x={j}
-                    data-y={i}
-                    key={index}
-                    onMouseOver={() => dragging(index)}
-                    onMouseOut={() => !isClick && setHoveredCell(null)}
-                    onMouseDown={(event) => startDrag(event, index)}
-                    onTouchStart={(event) => startDrag(event, index)}
-                    onTouchMove={(event) => dragging(event)}
+                    data-y={i} 
+                    key={i*content.size+j}
+                    onMouseOver={(event) => {dragging(event,index)}}
+                    onMouseOut={()=>{
+                            if(isClick == false){
+                                setHoveredCell(null);
+                            }
+                        }
+                    }
+                    onMouseDown={(event)=>{startDrag(event,index)}}
+                    onTouchStart={(event)=>{event.preventDefault();startDrag(event,index)}}
+                    onTouchMove={(event) => {event.preventDefault();;dragging(event,index)}}
+                    
                 >
-                    {content.letters[index]}
+                {content.letters[index]}
                 </div>
             );
         }
     }
+    
+    let section = 
+    <section className={`gridContainer grid w-full h-100 p-4 gap-1 rounded-2xl bg-cyan-100 select-none`}
+    style={{
+        gridTemplateColumns: `repeat(${content.size}, 1fr)`,
+        gridTemplateRows: `repeat(${content.size}, 1fr)`,
+    }}        
+    onMouseUp={endDrag}
+    onMouseLeave={endDrag}
+    onTouchEnd={endDrag}
+    >
+        {grid}
+    </section>
 
     return (
-        <section
-            className="gridContainer grid w-full h-100 p-4 gap-1 rounded-2xl bg-cyan-100 select-none"
-            style={{
-                gridTemplateColumns: `repeat(${content.size}, 1fr)`,
-                gridTemplateRows: `repeat(${content.size}, 1fr)`,
-            }}
-            onMouseUp={endDrag}
-            onMouseLeave={endDrag}
-            onTouchEnd={endDrag}
-        >
-            {grid}
-        </section>
+        <>
+            {section}
+        </>
     );
+    
 }
 
-export { Grid };
+export {Grid};
