@@ -23,15 +23,14 @@ let size = Math.sqrt(letters.length);
 let content = {info : {theme:"Places", author:"Aditya Narayan", createdAt:"testing", likes:"testing", size:`${size}x${size}`}, 
               letters,
               solution :  new Set(["LUCKNOW","VARANASI","ETAWAH",
-                "BADAYUN","SULTANPUR","PUNE","SURAT","DELHI","AZAMGARH","AHMEDABAD"]),
+                "BADAYUN","SULTANPUR","PUNE","SURAT","DELHI","AHMEDABAD"].sort()),
               size};
-
   return (
     <>
       <Header/>
 
       <Wordsearch content = {content}/>
-      <a href="https://github.com/The-Wee-Lad"><div className='m-2 bg-black text-white border-2 rounded-xl w-fit p-2'>Made by Aditya Narayan</div></a>
+      <a href="https://github.com/The-Wee-Lad/WordSearch-Game/"><div className='m-2 bg-black text-white border-2 rounded-xl w-fit p-2'>Made by Aditya Narayan</div></a>
     </>
   )
 }
