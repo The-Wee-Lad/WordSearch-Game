@@ -2,35 +2,7 @@
 import { useState, useRef } from 'react';
 import 'tailwindcss';
 
-// const test = [[62, new Set(["#A200FF"])],
-// [60, new Set(["#00FF00"])],
-// [70, new Set(["#00FF00", "#008CFF"])],
-// [80, new Set(["#00FF00"])],
-// [90, new Set(["#00FF00"])],
-// [72, new Set(["#008CFF"])],
-// [71, new Set(["#008CFF"])],
-// [73, new Set(["#008CFF", "#A200FF"])],
-// [74, new Set(["#008CFF"])],
-// [75, new Set(["#008CFF"])],
-// [84, new Set(["#A200FF"])],
-// [95, new Set(["#A200FF"])],
-// [106, new Set(["#A200FF"])]
-// ]
-
-const highlightColors = [
-    "#00FF00",
-    "#008CFF",
-    "#FF1493",
-    "#A200FF",
-    "#00FF7F",
-    "#1E90FF",
-    "#FF4500",
-    "#8A2BE2",
-    "#FFD700",
-    "#FF1493",
-    "#00CED1"
-];
-
+const highlightColors = ["#00FF00","#008CFF","#FF1493","#A200FF","#00FF7F","#1E90FF","#FF4500","#8A2BE2","#FFD700","#FF1493","#00CED1"];
 let choosenColor = highlightColors[Math.floor(Math.random() * highlightColors.length)];
 
 function processSelectedCells(letters, color, selectedCell, solution, setSolution, setSolvedStrings, matchedCell, setMatchedCell) {
@@ -46,7 +18,6 @@ function processSelectedCells(letters, color, selectedCell, solution, setSolutio
             matchedCell.set(element, new Set([...(matchedCell.get(element) ?? []), color]));
         setMatchedCell(new Map(matchedCell));
     }
-
 }
 
 function Grid({ content, solution, setSolution, setSolvedStrings }) {
@@ -85,8 +56,11 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
             gridTemplateColumns: `repeat(${content.size},1fr)`,
             gridTemplateRows: `repeat(${content.size},1fr)`
         }}
+
+        //For PC Only
         onMouseDown={() => { setClicked(true) }}
         onMouseMove={(e) => {
+            //Throttling Abhi kaam ki nahi hai
             // const now = Date.now();
             // if (now - lastMoveTime.current < 100) return; // Adjust delay (100ms = slower movement)
             //     lastMoveTime.current = now;
@@ -107,6 +81,9 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
             processSelectedCells(content.letters, choosenColor, selectedCell, solution, setSolution, setSolvedStrings, matchedCell, setMatchedCell);
             setSelectedCell(new Set())
         }}
+
+        //For Android
+        //TODO:Complete Touch Screen Part
     >
         {gridCells}
     </section>
