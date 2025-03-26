@@ -9,7 +9,7 @@ function Wordsearch({content}) {
     let [solvedStrings, setSolvedStrings] = useState(new Set());
 
     return (
-        <div className='flex flex-col max-w-[500px] m-auto justify-center gap-2 p-2 bg-[#303030] rounded-2xl overflow-clip'>
+        <div className='flex flex-col max-w-[500px] m-auto justify-center gap-2 p-2 bg-[#3b746c] rounded-2xl overflow-clip'>
             <Info info={content.info}/>
             <Solutions solvedStrings={solvedStrings} solutions={solution} />
             <div className="flex justify-center ">
