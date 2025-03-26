@@ -2,7 +2,7 @@
 import { useState, useRef } from 'react';
 import 'tailwindcss';
 
-const highlightColors = ["#00FF00","#008CFF","#FF1493","#A200FF","#00FF7F","#1E90FF","#FF4500","#8A2BE2","#FFD700","#FF1493","#00CED1"];
+const highlightColors = ["#00FF00", "#008CFF", "#FF1493", "#A200FF", "#00FF7F", "#1E90FF", "#FF4500", "#8A2BE2", "#FFD700", "#FF1493", "#00CED1"];
 let choosenColor = highlightColors[Math.floor(Math.random() * highlightColors.length)];
 
 function processSelectedCells(letters, color, selectedCell, solution, setSolution, setSolvedStrings, matchedCell, setMatchedCell) {
@@ -10,7 +10,7 @@ function processSelectedCells(letters, color, selectedCell, solution, setSolutio
         reverseWord = [...selectedCell].map(elem => letters[elem]).reverse().join('');
     choosenColor = highlightColors[Math.floor(Math.random() * highlightColors.length)]
     if (solution.has(word) || solution.has(reverseWord)) {
-        let temp = solution.has(word)?word:reverseWord;
+        let temp = solution.has(word) ? word : reverseWord;
         solution.delete(temp);
         setSolution(new Set([...solution]));
         setSolvedStrings(prev => new Set([...prev, temp]));
@@ -27,6 +27,11 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
     let [selectedCell, setSelectedCell] = useState(new Set());
     let [hoveredCell, setHoveredCell] = useState(null);
     let [matchedCell, setMatchedCell] = useState(new Map());
+    let startX = useRef(null);
+    let startY = useRef(null);
+    let lastX = useRef(null);
+    let lastY = useRef(null);
+
     let gridCells = [];
     for (let i = 0; i < content.size; i++)
         for (let j = 0; j < content.size; j++)
@@ -35,9 +40,10 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
                 data-x={j}
                 data-y={i}
                 key={i * content.size + j}
-                style={{ backgroundColor: `${(hoveredCell == (i * content.size + j)) ? choosenColor : (selectedCell.has(i * content.size + j)) ? choosenColor : 'white'}`,
-                        transition: "background-color 0.05s ease-in-out",
-                        }}
+                style={{
+                    backgroundColor: `${(hoveredCell == (i * content.size + j)) ? choosenColor : (selectedCell.has(i * content.size + j)) ? choosenColor : 'white'}`,
+                    transition: "background-color 0.05s ease-in-out",
+                }}
             >{content.letters[i * content.size + j]}
                 {[...(matchedCell.get(i * content.size + j) || [])].map((element) => {
                     return <div
@@ -58,7 +64,14 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
         }}
 
         //For PC Only
-        onMouseDown={() => { setClicked(true) }}
+        //Complete at this point
+        onMouseDown={(e) => { 
+            setClicked(true); 
+            startX.current = e.target.dataset.x; 
+            startY.current = e.target.dataset.y; 
+            lastX.current = null;
+            lastY.current = null;    
+        }}
         onMouseMove={(e) => {
             //Throttling Abhi kaam ki nahi hai
             // const now = Date.now();
@@ -66,8 +79,25 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
             //     lastMoveTime.current = now;
             if (!clicked) setHoveredCell(+e.target.dataset.y * content.size + 1 * e.target.dataset.x);
             else {
-                if (!e.target?.classList?.contains("gridContainer"))
-                    setSelectedCell(prev => new Set([...prev, +e.target.dataset.y * content.size + 1 * e.target.dataset.x]))
+                const paint = ()=>{setSelectedCell(prev => new Set([...prev, e.target.dataset.y * content.size + (+e.target.dataset.x)]))};
+                if (!e.target?.classList?.contains("gridContainer")) {
+                    if(startX.current == e.target.dataset.x && startY.current == e.target.dataset.y)
+                        paint();
+                    else if (lastX.current == null && lastY.current == null) {
+                        lastX.current = e.target.dataset.x;
+                        lastY.current = e.target.dataset.y;
+                        paint();
+                    } else {
+                        if ((startX.current - lastX.current == lastX.current - e.target.dataset.x)
+                            && (startY.current - lastY.current == lastY.current - e.target.dataset.y)) {
+                            startX.current = lastX.current;
+                            startY.current = lastY.current;
+                            lastX.current = e.target.dataset.x;
+                            lastY.current = e.target.dataset.y;
+                            paint();
+                        }
+                    }
+                }
             }
         }}
         onMouseUp={() => {
@@ -82,8 +112,8 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
             setSelectedCell(new Set())
         }}
 
-        //For Android
-        //TODO:Complete Touch Screen Part
+    //For Android
+    //TODO:Complete Touch Screen Part
     >
         {gridCells}
     </section>
