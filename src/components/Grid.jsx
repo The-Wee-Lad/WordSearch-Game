@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState, useRef } from 'react';
 import 'tailwindcss';
 
@@ -109,11 +108,11 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
             setClicked(false);
             setHoveredCell(null);
             processSelectedCells(content.letters, choosenColor, selectedCell, solution, setSolution, setSolvedStrings, matchedCell, setMatchedCell);
-            setSelectedCell(new Set())
+            setSelectedCell(new Set());
         }}
 
     //For Android
-    //TODO:Complete Touch Screen Part
+    //TODO:Complete Touch Screen Part 
 
     >
         {gridCells}
