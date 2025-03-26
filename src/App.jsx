@@ -7,22 +7,23 @@ import { Wordsearch } from './components/Wordsearch.jsx';
 function App() {
 
 let letters = [
-  "Q", "A", "M", "N", "N", "W", "X", "R", "D", "R",
-  "J", "L", "Y", "I", "J", "H", "E", "M", "E", "K",
-  "Q", "D", "Y", "G", "S", "E", "J", "K", "N", "U",
-  "H", "K", "E", "G", "X", "H", "Q", "O", "Z", "S",
-  "L", "O", "D", "U", "T", "P", "R", "H", "K", "H",
-  "R", "Y", "N", "P", "J", "M", "G", "A", "T", "W",
-  "A", "R", "A", "T", "O", "N", "R", "Q", "E", "A",
-  "J", "J", "P", "A", "I", "N", "C", "A", "Y", "H",
+  "L", "V", "M", "S", "N", "W", "X", "R", "S", "R",
+  "U", "L", "A", "I", "U", "H", "E", "U", "E", "K",
+  "C", "D", "Y", "R", "Y", "R", "R", "K", "N", "U",
+  "K", "K", "E", "G", "A", "A", "A", "O", "Z", "S",
+  "N", "O", "D", "W", "D", "N", "R", "T", "U", "H",
+  "O", "Y", "A", "P", "A", "M", "S", "A", "T", "W",
+  "W", "H", "A", "T", "B", "N", "R", "S", "E", "A",
+  "J", "J", "P", "A", "I", "N", "C", "A", "I", "H",
   "C", "A", "L", "S", "A", "T", "F", "G", "I", "A",
-  "M", "W", "T", "N", "B", "Y", "A", "D", "A", "V"
+  "M", "R", "U", "P", "N", "A", "T", "L", "U", "S"
 ]
 
 let size = Math.sqrt(letters.length);
-let content = {info : {theme:"Surname", author:"Aditya Narayan", createdAt:"testing", likes:"testing", size:`${size}x${size}`}, 
+let content = {info : {theme:"Places", author:"Aditya Narayan", createdAt:"testing", likes:"testing", size:`${size}x${size}`}, 
               letters,
-              solution :  new Set(["GUPTA","PANDEY","SINGH","RAJ","YADAV","MISHRA","KUSHWAHA","RAI","JAT","LODU"]),
+              solution :  new Set(["LUCKNOW","VARANASI","ETAWAH",
+                "BADAYUN","SULTANPUR","PUNE","SURAT","DELHI","AZAMGARH","AHMEDABAD"]),
               size};
 
   return (
