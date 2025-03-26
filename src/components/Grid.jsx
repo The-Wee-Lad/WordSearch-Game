@@ -19,7 +19,7 @@ function processSelectedCells(letters, color, selectedCell, solution, setSolutio
     }
 }
 
-function Grid({ content, solution, setSolution, setSolvedStrings }) {
+function Grid({ content, solution, setSolution, setSolvedStrings, win }) {
 
     // const lastMoveTime = useRef(0);
     let [clicked, setClicked] = useState(false);
@@ -56,10 +56,11 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
             </div>);
 
     let section = <section
-        className='gridContainer bg-white p-2 w-full h-full grid gap-1 z-10 select-none touch-none'
+        className='gridContainer bg-white p-2 w-full h-full grid gap-1 z-10 select-none'
         style={{
             gridTemplateColumns: `repeat(${content.size},1fr)`,
-            gridTemplateRows: `repeat(${content.size},1fr)`
+            gridTemplateRows: `repeat(${content.size},1fr)`,
+            touchAction: `${win?"auto":"none"}`
         }}
 
         //For PC Only
