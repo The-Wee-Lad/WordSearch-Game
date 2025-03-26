@@ -114,6 +114,7 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
 
     //For Android
     //TODO:Complete Touch Screen Part
+
     >
         {gridCells}
     </section>
