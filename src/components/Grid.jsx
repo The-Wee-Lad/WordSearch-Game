@@ -56,7 +56,7 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
             </div>);
 
     let section = <section
-        className='gridContainer bg-white p-2 w-full h-full grid gap-1 z-10 select-none'
+        className='gridContainer bg-white p-2 w-full h-full grid gap-1 z-10 select-none touch-none'
         style={{
             gridTemplateColumns: `repeat(${content.size},1fr)`,
             gridTemplateRows: `repeat(${content.size},1fr)`
@@ -64,12 +64,12 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
 
         //For PC Only
         //Complete at this point
-        onMouseDown={(e) => { 
-            setClicked(true); 
-            startX.current = e.target.dataset.x; 
-            startY.current = e.target.dataset.y; 
+        onMouseDown={(e) => {
+            setClicked(true);
+            startX.current = e.target.dataset.x;
+            startY.current = e.target.dataset.y;
             lastX.current = null;
-            lastY.current = null;    
+            lastY.current = null;
         }}
         onMouseMove={(e) => {
             //Throttling Abhi kaam ki nahi hai
@@ -78,9 +78,9 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
             //     lastMoveTime.current = now;
             if (!clicked) setHoveredCell(+e.target.dataset.y * content.size + 1 * e.target.dataset.x);
             else {
-                const paint = ()=>{setSelectedCell(prev => new Set([...prev, e.target.dataset.y * content.size + (+e.target.dataset.x)]))};
+                const paint = () => { setSelectedCell(prev => new Set([...prev, e.target.dataset.y * content.size + (+e.target.dataset.x)])) };
                 if (!e.target?.classList?.contains("gridContainer")) {
-                    if(startX.current == e.target.dataset.x && startY.current == e.target.dataset.y)
+                    if (startX.current == e.target.dataset.x && startY.current == e.target.dataset.y)
                         paint();
                     else if (lastX.current == null && lastY.current == null) {
                         lastX.current = e.target.dataset.x;
@@ -111,9 +111,48 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
             setSelectedCell(new Set());
         }}
 
-    //For Android
-    //TODO:Complete Touch Screen Part 
-
+        //For Android
+        onTouchStart={(e) => {
+            console.log("Start", e.target.dataset.y * content.size + (+e.target.dataset.x));
+            setClicked(true);
+            startX.current = e.target.dataset.x;
+            startY.current = e.target.dataset.y;
+            lastX.current = null;
+            lastY.current = null;
+        }}
+        onTouchMove={(e) => {
+            const paint = () => { setSelectedCell(prev => new Set([...prev, e.target.dataset.y * content.size + (+e.target.dataset.x)])) };
+            //Throttling Abhi kaam ki nahi hai
+            // const now = Date.now();
+            // if (now - lastMoveTime.current < 100) return; // Adjust delay (100ms = slower movement)
+            //     lastMoveTime.current = now;
+            e.target = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+            if (!e.target?.classList?.contains("gridContainer")) {
+                console.log("Inside Move", clicked, e.target.dataset.y * content.size + (+e.target.dataset.x), e.touches[0]);
+                if (startX.current == e.target.dataset.x && startY.current == e.target.dataset.y)
+                    paint();
+                else if (lastX.current == null && lastY.current == null) {
+                    lastX.current = e.target.dataset.x;
+                    lastY.current = e.target.dataset.y;
+                    paint();
+                } else {
+                    if ((startX.current - lastX.current == lastX.current - e.target.dataset.x)
+                        && (startY.current - lastY.current == lastY.current - e.target.dataset.y)) {
+                        startX.current = lastX.current;
+                        startY.current = lastY.current;
+                        lastX.current = e.target.dataset.x;
+                        lastY.current = e.target.dataset.y;
+                        paint();
+                    }
+                }
+            }
+        }}
+        onTouchEnd={() => {
+            setClicked(false);
+            setHoveredCell(null);
+            processSelectedCells(content.letters, choosenColor, selectedCell, solution, setSolution, setSolvedStrings, matchedCell, setMatchedCell);
+            setSelectedCell(new Set());
+        }}
     >
         {gridCells}
     </section>
