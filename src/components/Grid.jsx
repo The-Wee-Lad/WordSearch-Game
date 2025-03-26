@@ -112,7 +112,6 @@ function Grid({ content, solution, setSolution, setSolvedStrings }) {
         }}
 
         //For Android
-        //TODO:Complete Touch Screen Part 
         onTouchStart={(e) => {
             console.log("Start", e.target.dataset.y * content.size + (+e.target.dataset.x));
             setClicked(true);
