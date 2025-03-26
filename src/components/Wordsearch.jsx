@@ -7,7 +7,6 @@ function Wordsearch({content}) {
 
     let [solution, setSolution] = useState(new Set([...content.solution]));
     let [solvedStrings, setSolvedStrings] = useState(new Set());
-
     return (
         <div className='flex flex-col max-w-[500px] m-auto justify-center gap-2 p-2 bg-[#3b746c] rounded-2xl overflow-clip'>
             <Info info={content.info}/>
