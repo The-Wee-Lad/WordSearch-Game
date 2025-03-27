@@ -1,5 +1,3 @@
-
-
 function Solutions({solvedStrings = new Set(),solutions=new Set(["No Solutions Passed"])}) {
     let solutionArray = [];
     for(let i = 0; i < solutions.size; i++){
@@ -13,11 +11,7 @@ function Solutions({solvedStrings = new Set(),solutions=new Set(["No Solutions P
     }
 
     let solvedArray = [];
-    // console.log(solvedStrings.size, solutions.size);
-    // console.log(solutions, solvedStrings);
-    
     for(let i = 0; i < solvedStrings.size; i++){
-        console.log("this ",[...solvedStrings][i]);
         solvedArray.push(
             <div key={i} 
             className={`border-2 border-[#82ff82] bg-[#B2FFB2] rounded-2xl p-1 mr-1 text-sm line-through text-[#636363] font-bold`}>
@@ -30,7 +24,6 @@ function Solutions({solvedStrings = new Set(),solutions=new Set(["No Solutions P
         <div className="flex flex-row justify-start items-center flex-wrap gap-0.5 bg-[#ffeb9a] border-[#fcdb55] border-2 rounded-xl p-2">
             {solutionArray}
             {solvedArray}
-            
         </div>
     );
 }

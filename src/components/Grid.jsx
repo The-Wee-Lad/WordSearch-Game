@@ -31,105 +31,26 @@ function Grid({ content, solution, setSolution, setSolvedStrings, win }) {
     let lastX = useRef(null);
     let lastY = useRef(null);
 
-    let gridCells = [];
-    for (let i = 0; i < content.size; i++)
-        for (let j = 0; j < content.size; j++)
-            gridCells.push(<div
-                className={`relative h-full w-full z-0 p-1.5 border-1 border-black rounded-[5px] flex flex-row justify-center items-center `}
-                data-x={j}
-                data-y={i}
-                key={i * content.size + j}
-                style={{
-                    backgroundColor: `${(hoveredCell == (i * content.size + j)) ? choosenColor : (selectedCell.has(i * content.size + j)) ? choosenColor : 'white'}`,
-                    transition: "background-color 0.05s ease-in-out",
-                }}
-            >{content.letters[i * content.size + j]}
-                {[...(matchedCell.get(i * content.size + j) || [])].map((element) => {
-                    return <div
-                        className='absolute h-full w-full -z-50 pointer-events-none'
-                        key={`${element}`}
-                        style={{
-                            backgroundColor: `${element}`,
-                            opacity: 0.25,
-                        }}></div>
-                })}
-            </div>);
-
-    let section = <section
-        className='gridContainer bg-white p-2 w-full h-full grid gap-1 z-10 select-none'
-        style={{
-            gridTemplateColumns: `repeat(${content.size},1fr)`,
-            gridTemplateRows: `repeat(${content.size},1fr)`,
-            touchAction: `${win?"auto":"none"}`
-        }}
-
-        //For PC Only
-        //Complete at this point
-        onMouseDown={(e) => {
-            setClicked(true);
-            startX.current = e.target.dataset.x;
-            startY.current = e.target.dataset.y;
-            lastX.current = null;
-            lastY.current = null;
-        }}
-        onMouseMove={(e) => {
-            //Throttling Abhi kaam ki nahi hai
-            // const now = Date.now();
-            // if (now - lastMoveTime.current < 100) return; // Adjust delay (100ms = slower movement)
-            //     lastMoveTime.current = now;
-            if (!clicked) setHoveredCell(+e.target.dataset.y * content.size + 1 * e.target.dataset.x);
-            else {
-                const paint = () => { setSelectedCell(prev => new Set([...prev, e.target.dataset.y * content.size + (+e.target.dataset.x)])) };
-                if (!e.target?.classList?.contains("gridContainer")) {
-                    if (startX.current == e.target.dataset.x && startY.current == e.target.dataset.y)
-                        paint();
-                    else if (lastX.current == null && lastY.current == null) {
-                        lastX.current = e.target.dataset.x;
-                        lastY.current = e.target.dataset.y;
-                        paint();
-                    } else {
-                        if ((startX.current - lastX.current == lastX.current - e.target.dataset.x)
-                            && (startY.current - lastY.current == lastY.current - e.target.dataset.y)) {
-                            startX.current = lastX.current;
-                            startY.current = lastY.current;
-                            lastX.current = e.target.dataset.x;
-                            lastY.current = e.target.dataset.y;
-                            paint();
-                        }
-                    }
-                }
-            }
-        }}
-        onMouseUp={() => {
-            setClicked(false);
-            processSelectedCells(content.letters, choosenColor, selectedCell, solution, setSolution, setSolvedStrings, matchedCell, setMatchedCell);
-            setSelectedCell(new Set())
-        }}
-        onMouseLeave={() => {
-            setClicked(false);
-            setHoveredCell(null);
-            processSelectedCells(content.letters, choosenColor, selectedCell, solution, setSolution, setSolvedStrings, matchedCell, setMatchedCell);
-            setSelectedCell(new Set());
-        }}
-
-        //For Android
-        onTouchStart={(e) => {
-            console.log("Start", e.target.dataset.y * content.size + (+e.target.dataset.x));
-            setClicked(true);
-            startX.current = e.target.dataset.x;
-            startY.current = e.target.dataset.y;
-            lastX.current = null;
-            lastY.current = null;
-        }}
-        onTouchMove={(e) => {
-            const paint = () => { setSelectedCell(prev => new Set([...prev, e.target.dataset.y * content.size + (+e.target.dataset.x)])) };
-            //Throttling Abhi kaam ki nahi hai
-            // const now = Date.now();
-            // if (now - lastMoveTime.current < 100) return; // Adjust delay (100ms = slower movement)
-            //     lastMoveTime.current = now;
+    
+    const start = (e) => {
+        setClicked(true);
+        startX.current = e.target.dataset.x;
+        startY.current = e.target.dataset.y;
+        lastX.current = null;
+        lastY.current = null;
+    }
+    const move = (e,isTouch) => {
+        //Throttling Abhi kaam ki nahi hai
+        // const now = Date.now();
+        // if (now - lastMoveTime.current < 100) return; // Adjust delay (100ms = slower movement)
+        //     lastMoveTime.current = now;
+        if(isTouch)
             e.target = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+
+        if (!clicked) setHoveredCell(+e.target.dataset.y * content.size + 1 * e.target.dataset.x);
+        else {
+            const paint = () => { setSelectedCell(prev => new Set([...prev, e.target.dataset.y * content.size + (+e.target.dataset.x)])) };
             if (!e.target?.classList?.contains("gridContainer")) {
-                console.log("Inside Move", clicked, e.target.dataset.y * content.size + (+e.target.dataset.x), e.touches[0]);
                 if (startX.current == e.target.dataset.x && startY.current == e.target.dataset.y)
                     paint();
                 else if (lastX.current == null && lastY.current == null) {
@@ -147,13 +68,60 @@ function Grid({ content, solution, setSolution, setSolvedStrings, win }) {
                     }
                 }
             }
+        }
+    }
+    const end = () => {
+        setClicked(false);
+        processSelectedCells(content.letters, choosenColor, selectedCell, solution, setSolution, setSolvedStrings, matchedCell, setMatchedCell);
+        setSelectedCell(new Set())
+    }
+
+    let gridCells = [];
+    for (let i = 0; i < content.size; i++)
+        for (let j = 0; j < content.size; j++)
+            gridCells.push(<div
+                className={`relative h-full w-full p-1.5 border-1 border-black rounded-[5px] flex flex-row justify-center items-center `}
+                data-x={j}
+                data-y={i}
+                key={i * content.size + j}
+                style={{
+                    backgroundColor: `${(hoveredCell == (i * content.size + j)) ? choosenColor : (selectedCell.has(i * content.size + j)) ? choosenColor : 'white'}`,
+                    transition: "background-color 0.05s ease-in-out",
+                    zIndex:0
+                }}>    
+                
+                {content.letters[i * content.size + j]}
+
+                {[...(matchedCell.get(i * content.size + j) || [])].map((element) => {
+                    return <div
+                        className='backgroundCells absolute h-full w-full pointer-events-none'
+                        key={`${element}`}
+                        style={{
+                            backgroundColor: `${element}`,
+                            opacity: 0.25,
+                            zIndex:-1
+                        }}></div>
+                })}
+            </div>);
+
+    let section = <section
+        className='gridContainer bg-white p-2 w-full h-full grid gap-1  select-none'
+        style={{
+            gridTemplateColumns: `repeat(${content.size},1fr)`,
+            gridTemplateRows: `repeat(${content.size},1fr)`,
+            touchAction: `${win?"auto":"none"}`
         }}
-        onTouchEnd={() => {
-            setClicked(false);
-            setHoveredCell(null);
-            processSelectedCells(content.letters, choosenColor, selectedCell, solution, setSolution, setSolvedStrings, matchedCell, setMatchedCell);
-            setSelectedCell(new Set());
-        }}
+
+        //For PC Only
+        onMouseDown={start}
+        onMouseMove={move}
+        onMouseUp={end}
+        onMouseLeave={() => {setHoveredCell(null);end();}}
+
+        //For Android Only
+        onTouchStart={start}
+        onTouchMove={(e) => {move(e,true)}}
+        onTouchEnd={end}
     >
         {gridCells}
     </section>

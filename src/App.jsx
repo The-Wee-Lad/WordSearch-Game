@@ -20,7 +20,7 @@ let letters = [
 ]
 
 let size = Math.sqrt(letters.length);
-let content = {info : {theme:"Places", author:"Aditya Narayan", createdAt:"testing", likes:"testing", size:`${size}x${size}`}, 
+let content = {info : {theme:"Indian Cities", author:"Me", createdAt:"testing", likes:"testing", size:`${size}x${size}`}, 
               letters,
               solution :  new Set(["LUCKNOW","VARANASI","ETAWAH",
                 "BADAYUN","SULTANPUR","PUNE","SURAT","DELHI","AHMEDABAD"].sort()),
